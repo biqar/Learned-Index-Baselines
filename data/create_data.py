@@ -61,7 +61,7 @@ def create_data(distribution, data_size=SIZE):
         data = np.random.normal(1000, 100, size=data_size)
     res_path = filePath[distribution]
     data.sort()
-    with open(res_path, 'wb') as csvFile:
+    with open(res_path, 'w') as csvFile:
         csv_writer = csv.writer(csvFile)
         i = 0
         if distribution == Distribution.EXPONENTIAL:
@@ -103,7 +103,7 @@ def create_data_storage(distribution, learning_percent=0.5, data_size=SIZE):
             store_bits.append(random.randint(0, int(1.0 / learning_percent) - 1))
     i = 0
     insert_data = []
-    with open(store_path, 'wb') as csvFile:
+    with open(store_path, 'w') as csvFile:
         csv_writer = csv.writer(csvFile)
         #deal with sample training and storage optimization
         if distribution == Distribution.EXPONENTIAL:
@@ -144,7 +144,7 @@ def create_data_storage(distribution, learning_percent=0.5, data_size=SIZE):
                     else:
                         insert_data.append(din)
     random.shuffle(insert_data) 
-    with open(to_store_path, 'wb') as csvFile:
+    with open(to_store_path, 'w') as csvFile:
         csv_writer = csv.writer(csvFile)
         for din in insert_data:
             csv_writer.writerow([din])
