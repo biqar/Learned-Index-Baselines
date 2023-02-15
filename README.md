@@ -1,10 +1,20 @@
 # Learned Indexes
-Implementation of BTree part for paper 'The Case for Learned Index Structures'.  
 
-T. Kraska, A. Beutel, E. H. Chi, J. Dean, and N. Polyzotis. The Case for Learned
-Index Structures. https://arxiv.org/abs/1712.01208, 2017
->Language: Python  
+The code of this project is a simple implementation of the article `"The Case For Learned Index Structures"`, which implements the BTree part of the article. Currently, it supports `integer` test sets, and `random distribution` or `exponential distribution` can be selected for testing.
+
+T. Kraska, A. Beutel, E. H. Chi, J. Dean, and N. Polyzotis. The Case for Learned Index Structures. https://arxiv.org/abs/1712.01208, 2017
+
+Additionally, the project explored scenarios with new data insertions.
+
+>Language: Python 3.x (tested on Python 3.8.10)
 Support content: Integer values, Random and Exponential distribution
+
+## Required Python Libraries
+The code has been tested on:
+> Pandas (1.5.3), TensorFlow (2.11.0), NumPy (1.23.5), enum
+
+Please note that, the code used TensorFlow 1.x and our system have TensorFlow installed v2.11.0. So, we import TensorFlow as `import tensorflow.compat.v1 as tf` and disables TensorFlow 2.x behaviors by `tf.disable_v2_behavior()`.
+Please let me know if you find TensorFlow related issues while running the code in your system.
 
 ## Files Structures
 > data/: test data  
@@ -14,9 +24,9 @@ Learned_BTree.py: main file
 Trained_NN.py: NN structures
 
 ## HOW TO RUN
-> First, you need to install python2.7.x and package tensorflow, pandas, numpy, enum.   
-Second, use command to run the Learned_BTree.py fule, that is,  
-```python Learned_BTree.py -t <Type> -d <Distribution> [-p|-n] [Percent]|[Number] [-c] [New data] [-h]```.  
+Use the following command to run the Learned_BTree.py,
+
+```> python Learned_BTree.py -t <Type> -d <Distribution> [-p|-n] [Percent]|[Number] [-c] [New data] [-h]```.  
   
 >Parameters:  
 'type': 'Type: sample, full',  
@@ -25,34 +35,14 @@ Second, use command to run the Learned_BTree.py fule, that is,
 'number': 'Number: 10,000-10,000,000, default value = 300,000',  
 'new data' 'New Data: INTEGER, 0 for no creating new data file, others for creating'  
   
->Example:  
-```python Learned_BTree.py -t full -d random -n 100000 -c 1```  
-  
+Example:  
+```> python Learned_BTree.py -t full -d random -n 100000 -c 1```  
 
-## Other Content
-### Sample Training
-> Sample training is also included in this project, you can use parameter 'sample' for '-t' to test sample training, while '-p' is used for change the sample training percent.  
-  
->Example:  
-```python Learned_BTree.py -t sample -d random -p 0.3 -c 0```
-### Storage Optimization
->More Information will be added soon.
+## Data Index
 
+![Stage Models](https://github.com/biqar/Learned-Index-Baselines/blob/master/about/models.PNG)
 
-***
-# **中文**
-本项目代码是对《The Case For Learned Index Structures》一文的简单实现，实现了文章中BTree的部分，目前支持整数测试集，可以选用随机分布或者指数分布进行测试。  
-
-T. Kraska, A. Beutel, E. H. Chi, J. Dean, and N. Polyzotis. The Case for Learned
-Index Structures. https://arxiv.org/abs/1712.01208, 2017  
-
-此外，项目还对有新数据插入的场景进行了探索。
-
-## 数据索引
-### 主要步骤
-
-1. 依据论文中思想，搭建混合多级神经网络架构
-![Stage Models](https://github.com/yangjufo/Learned-Indexes/blob/master/about/models.PNG)
+1. Based on the ideas in the paper, build a hybrid multi-level neural network architecture
 ``` 
  Input: int threshold, int stages[]
  Data: record data[]
@@ -70,25 +60,28 @@ Index Structures. https://arxiv.org/abs/1712.01208, 2017
 11 for j ← 1 to index[M].size do
 12   index[M][j].calc_err(tmp.records[M][j]);
 13   if index[M][j].max_abs_err > threshold then
-14     index[M][j] = new B-Tree trained on tmp_records[M][j];
+14     index[M][j] = new B+Tree trained on tmp_records[M][j];
 15 return index;
 ```
-> 在以上程序中，从整个数据集开始（第3行）开始，首先训练第1级模型。基于第1级模型的预测，从下一级挑选模型，并添加相应的关键字到该模型训练集（第9行和第10行），然后训练这个模型。最后，检查最后一级的模型，如果平均误差高于预定义的阈值，则用B树替换神经网络模型（第11-14行）。
-*所使用的模型均为全连接网络，随机分布用的是没有隐藏的全连接网络；指数分布用的是有1个有8个核的隐藏层的全连接网络*
 
-2. 使用数据测试神经网络索引和B树索引，对比两者性能
-***
-## 抽样学习
-> 神经网络模型的训练需要较长的时间，通过抽取一部分数据训练的方式，加快训练的速度。
-*** 
-## 存储优化
-> 基于后续插入数据的分布与现有分布相近的观点。
-### 主要步骤
-1. 根据建立的数据索引估计数据分布，并移动数据的位置，预留出空间。比如原先0-100的数据占据100个BLOCK，预计最终存储数据是现在的2倍，则预留100个BLOCK。
+> In the above program, starting from the entire dataset (line 3), the level 1 model is first trained. Based on the prediction of the first-level model, the model is selected from the next level, and the corresponding keywords are added to the model training set (lines 9 and 10), and then the model is trained. Finally, the model at the last level is checked, and if the average error is above a predefined threshold, the neural network model is replaced with a B-tree (Lines 11-14). The models used are all fully connected networks, the random distribution uses a fully connected network without hidden; the exponential distribution uses a fully connected network with a hidden layer with 8 cores
 
-2. 插入数据，与不进行优化比较。
+2. Use the data to test the neural network index and the B+Tree index, and compare the performance of the two
 
-### 优势
-1. 新插入数据冲突少，加快插入速度。
-2. 无需重新调整索引，降低索引维护代价，支持了新数据插入场景。
+## Sample Training
+The training of the neural network model takes a long time, and the speed of training can be accelerated by extracting a part of data for training.
+Sample training is also included in this project, you can use parameter 'sample' for '-t' to test sample training, while '-p' is used for change the sample training percent. Also, the sample training does not include B+Tree as part of the benchmark test. Feel free to update the code if you also want to include B+Tree benchmark as part of the sample training.
 
+Example:  
+```> python Learned_BTree.py -t sample -d random -p 0.3 -c 0```
+
+## Storage Optimization
+Based on the idea that the distribution of subsequent inserted data is close to the existing distribution.
+
+### The main steps
+1. Estimate the data distribution based on the established data index, and move the location of the data to reserve space. For example, the original 0-100 data occupies 100 BLOCKs, and it is expected that the final stored data will be twice the current size, so 100 BLOCKs will be reserved.
+2. Inserting data, compared to no optimization.
+
+### Advantage
+1. Newly inserted data has fewer conflicts and speeds up insertion.
+2. There is no need to readjust the index, which reduces the index maintenance cost and supports new data insertion scenarios.
