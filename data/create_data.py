@@ -3,6 +3,7 @@ from enum import Enum
 import numpy as np
 import csv
 import random
+import sys, getopt
 
 SIZE = 100000
 BLOCK_SIZE = 100
@@ -150,5 +151,33 @@ def create_data_storage(distribution, learning_percent=0.5, data_size=SIZE):
             csv_writer.writerow([din])
 
 
+def main(argv):
+    dist = ''
+    opts, args = getopt.getopt(argv,"hd:",["distribution="])
+    for opt, arg in opts:
+        if opt == '-h':
+            print ('create_data.py -d <distribution: random, binomial, poisson, exponential, normal, lognormal>')
+            sys.exit()
+        elif opt in ("-d", "--distribution"):
+            dist = arg
+    print('selected data distribution is: {}'.format(dist))
+
+    if dist == 'r':
+        create_data_storage(Distribution.RANDOM)
+    elif dist == 'b':
+        create_data_storage(Distribution.BINOMIAL)
+    elif dist == 'p':
+        create_data_storage(Distribution.POISSON)
+    elif dist == 'e':
+        create_data_storage(Distribution.EXPONENTIAL)
+    elif dist == 'n':
+        create_data_storage(Distribution.NORMAL)
+    elif dist == 'l':
+        create_data_storage(Distribution.LOGNORMAL)
+    else:
+        print ('selected distribution is not supported, please choose from: <random, binomial, poisson, exponential, normal, lognormal>')
+        sys.exit()
+
+
 if __name__ == "__main__":
-    create_data_storage(Distribution.EXPONENTIAL)
+    main(sys.argv[1:])

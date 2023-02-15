@@ -1,5 +1,5 @@
 # Main file for NN model
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import numpy as np
 from enum import Enum
 from data.create_data import Distribution
@@ -83,12 +83,16 @@ class AbstractNN:
         tmp_res = np.mat(input_key) * np.mat(self.weights[0]) + np.mat(self.bias[0])
         for i in range(1, len(self.core_nums) - 1):
             tmp_res = np.mat(tmp_res) * np.mat(self.weights[i]) + np.mat(self.bias[i])
-        return int(round(tmp_res[0][0]))
+        # print("tmp_res[0][0]: {}".format(tmp_res[0][0]))
+        return int(np.round(tmp_res[0][0]))
 
 # Netural Network Model
 class TrainedNN:
     def __init__(self, threshold, useThreshold, cores, train_step_num, batch_size, learning_rate, keep_ratio, train_x, train_y,
                  test_x, test_y):
+
+        # tensorflow disable properties
+        tf.disable_v2_behavior()
         #set parameters
         if cores is None:
             cores = []
@@ -104,10 +108,12 @@ class TrainedNN:
         self.test_x = np.array([test_x]).T
         self.test_y = np.array([test_y]).T
         self.sess = tf.Session()
+        # self.sess = tf.compat.v1.Session()
         self.batch = 1
         self.batch_x = np.array([self.train_x[0:self.batch_size]]).T
         self.batch_y = np.array([self.train_y[0:self.batch_size]]).T
         self.y_ = tf.placeholder(tf.float32, shape=[None, self.core_nums[-1]])
+        # self.y_ = tf.compat.v1.placeholder(tf.float32, shape=[None, self.core_nums[-1]])
         self.w_fc = []
         self.b_fc = []
         for i in range(len(self.core_nums) - 1):
@@ -116,7 +122,9 @@ class TrainedNN:
         self.h_fc = [None for i in range(len(self.core_nums))]
         self.h_fc_drop = [None for i in range(len(self.core_nums))]
         self.h_fc_drop[0] = tf.placeholder(tf.float32, shape=[None, self.core_nums[0]])
-        self.keep_prob = tf.placeholder(tf.float32)        
+        # self.h_fc_drop[0] = tf.compat.v1.placeholder(tf.float32, shape=[None, self.core_nums[0]])
+        self.keep_prob = tf.placeholder(tf.float32)
+        # self.keep_prob = tf.compat.v1.placeholder(tf.float32)
 
     # get next batch of data
     def next_batch(self):
@@ -137,6 +145,7 @@ class TrainedNN:
 
         self.cross_entropy = tf.reduce_mean(tf.losses.mean_squared_error(self.y_, self.h_fc[len(self.core_nums) - 2]))
         self.train_step = tf.train.AdamOptimizer(self.learning_rate).minimize(self.cross_entropy)
+        # self.train_step = tf.compat.v1.train.AdamOptimizer(self.learning_rate).minimize(self.cross_entropy)
         self.sess.run(tf.global_variables_initializer())
         
         last_err = 0
