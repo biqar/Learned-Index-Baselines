@@ -239,15 +239,19 @@ def train_index(threshold, use_threshold, distribution, path):
                                   "bias": trained_index[1][ind].weights}
     result = [{"stage": 1, "parameters": result_stage1}, {"stage": 2, "parameters": result_stage2}]
 
-    with open("model/" + pathString[distribution] + "/full_train/NN/" + str(TOTAL_NUMBER) + ".json", "w") as jsonFile:
+    nn_output_path = "model/" + pathString[distribution] + "/full_train/NN/"
+    if not os.path.exists(nn_output_path):
+        os.makedirs(nn_output_path)
+    with open(nn_output_path + str(TOTAL_NUMBER) + ".json", "w") as jsonFile:
         json.dump(result, jsonFile, cls=NpEncoder)
 
     # wirte performance into files
     performance_NN = {"type": "NN", "build time": learn_time, "search time": search_time, "average error": mean_error,
-                      "store size": os.path.getsize(
-                          "model/" + pathString[distribution] + "/full_train/NN/" + str(TOTAL_NUMBER) + ".json")}
-    with open("performance/" + pathString[distribution] + "/full_train/NN/" + str(TOTAL_NUMBER) + ".json",
-              "w") as jsonFile:
+                      "store size": os.path.getsize(nn_output_path + str(TOTAL_NUMBER) + ".json")}
+    nn_performance_output_path = "performance/" + pathString[distribution] + "/full_train/NN/"
+    if not os.path.exists(nn_performance_output_path):
+        os.makedirs(nn_performance_output_path)
+    with open(nn_performance_output_path + str(TOTAL_NUMBER) + ".json", "w") as jsonFile:
         json.dump(performance_NN, jsonFile, cls=NpEncoder)
 
     del trained_index
@@ -295,17 +299,20 @@ def train_index(threshold, use_threshold, distribution, path):
                "numberOfkeys": node.numberOfKeys}
         result.append(tmp)
 
-    with open("model/" + pathString[distribution] + "/full_train/BTree/" + str(TOTAL_NUMBER) + ".json",
-              "w") as jsonFile:
+    btree_output_path = "model/" + pathString[distribution] + "/full_train/BTree/"
+    if not os.path.exists(btree_output_path):
+        os.makedirs(btree_output_path)
+    with open(btree_output_path + str(TOTAL_NUMBER) + ".json", "w") as jsonFile:
         json.dump(result, jsonFile, cls=NpEncoder)
 
     # write performance into files
     performance_BTree = {"type": "BTree", "build time": build_time, "search time": search_time,
                          "average error": mean_error,
-                         "store size": os.path.getsize(
-                             "model/" + pathString[distribution] + "/full_train/BTree/" + str(TOTAL_NUMBER) + ".json")}
-    with open("performance/" + pathString[distribution] + "/full_train/BTree/" + str(TOTAL_NUMBER) + ".json",
-              "w") as jsonFile:
+                         "store size": os.path.getsize(btree_output_path + str(TOTAL_NUMBER) + ".json")}
+    btree_performance_output_path = "performance/" + pathString[distribution] + "/full_train/BTree/"
+    if not os.path.exists(btree_performance_output_path):
+        os.makedirs(btree_performance_output_path)
+    with open(btree_performance_output_path + str(TOTAL_NUMBER) + ".json", "w") as jsonFile:
         json.dump(performance_BTree, jsonFile, cls=NpEncoder)
 
     del bt
@@ -404,15 +411,18 @@ def sample_train(threshold, use_threshold, distribution, training_percent, path)
                                   "bias": trained_index[1][ind].bias}
     result = [{"stage": 1, "parameters": result_stage1}, {"stage": 2, "parameters": result_stage2}]
 
-    with open("model/" + pathString[distribution] + "/sample_train/NN/" + str(training_percent) + ".json",
-              "w") as jsonFile:
+    nn_output_path = "model/" + pathString[distribution] + "/sample_train/NN/"
+    if not os.path.exists(nn_output_path):
+        os.makedirs(nn_output_path)
+    with open(nn_output_path + str(training_percent) + ".json", "w") as jsonFile:
         json.dump(result, jsonFile, cls=NpEncoder)
 
     performance_NN = {"type": "NN", "build time": learn_time, "search time": search_time, "average error": mean_error,
-                      "store size": os.path.getsize(
-                          "model/" + pathString[distribution] + "/sample_train/NN/" + str(training_percent) + ".json")}
-    with open("performance/" + pathString[distribution] + "/sample_train/NN/" + str(training_percent) + ".json",
-              "w") as jsonFile:
+                      "store size": os.path.getsize(nn_output_path + str(training_percent) + ".json")}
+    nn_performance_output_path = "performance/" + pathString[distribution] + "/sample_train/NN/"
+    if not os.path.exists(nn_performance_output_path):
+        os.makedirs(nn_performance_output_path)
+    with open(nn_performance_output_path + str(training_percent) + ".json", "w") as jsonFile:
         json.dump(performance_NN, jsonFile, cls=NpEncoder)
 
     del trained_index
