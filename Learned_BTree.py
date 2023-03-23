@@ -272,14 +272,15 @@ def train_index(threshold, use_threshold, distribution, path):
     for ind in range(len(test_set_x)):
         pre = bt.predict(test_set_x[ind])
         err += abs(pre - test_set_y[ind])
-        if err != 0:
-            flag = 1
-            pos = pre
-            off = 1
-            while pos != test_set_y[ind]:
-                pos += flag * off
-                flag = -flag
-                off += 1            
+        # note: I think the following codeblock does not have any impact.
+        # if err != 0:
+        #     flag = 1
+        #     pos = pre
+        #     off = 1
+        #     while pos != test_set_y[ind]:
+        #         pos += flag * off
+        #         flag = -flag
+        #         off += 1
     end_time = time.time()
     search_time = (end_time - start_time) / len(test_set_x)
     print("Search time ", search_time)
