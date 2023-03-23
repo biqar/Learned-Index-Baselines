@@ -30,7 +30,7 @@ Use the following command to run the Learned_BTree.py,
   
 >Parameters:  
 'type': 'Type: sample, full',  
-'distribution': 'Distribution: random, exponential',  
+'distribution': 'Distribution: random, binomial, poisson, exponential, normal, lognormal',  
 'percent': 'Percent: 0.1-1.0, default value = 0.5; sample train data size = 300,000',  
 'number': 'Number: 10,000-10,000,000, default value = 300,000',  
 'new data' 'New Data: INTEGER, 0 for no creating new data file, others for creating'  
