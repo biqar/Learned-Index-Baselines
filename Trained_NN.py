@@ -165,7 +165,7 @@ class TrainedNN:
                 err = self.sess.run(self.cross_entropy, feed_dict={self.h_fc_drop[0]: np.array([self.train_x]).T,
                                                                    self.y_: np.array([self.train_y]).T,
                                                                    self.keep_prob: 1.0})
-                print("cross_entropy: %f" % err)
+                # print("cross_entropy: %f" % err)
                 if step == 0:
                     last_err = err 
                 # use threhold to stop train 
