@@ -36,16 +36,27 @@ pathString = {
 
 # threshold for train (judge whether stop train and replace with BTree)
 thresholdPool = {
-    Distribution.RANDOM: [1, 4],    
-    Distribution.EXPONENTIAL: [55, 10000],
-    Distribution.LOGNORMAL: [55, 10000],
-}   
+    Distribution.RANDOM: [1, 4, 4],
+    Distribution.BINOMIAL: [55, 10000, 10000],
+    Distribution.POISSON: [55, 10000, 10000],
+    Distribution.EXPONENTIAL: [55, 10000, 10000],
+    Distribution.NORMAL: [55, 10000, 10000],
+    Distribution.LOGNORMAL: [55, 10000, 10000],
+}
 
 # whether use threshold to stop train for models in stages
+# useThresholdPool = {
+#     Distribution.RANDOM: [True, False, False],
+#     Distribution.EXPONENTIAL: [True, False, False],
+#     Distribution.LOGNORMAL: [True, False, False],
+# }
 useThresholdPool = {
-    Distribution.RANDOM: [True, False],    
-    Distribution.EXPONENTIAL: [True, False],
-    Distribution.LOGNORMAL: [True, False],
+    Distribution.RANDOM: [False, False, True],
+    Distribution.BINOMIAL: [False, False, True],
+    Distribution.POISSON: [False, False, True],
+    Distribution.EXPONENTIAL: [False, False, True],
+    Distribution.NORMAL: [False, False, True],
+    Distribution.LOGNORMAL: [False, False, True],
 }
 
 # JSON encoder
@@ -139,6 +150,10 @@ def train_index(threshold, use_threshold, distribution, path):
         parameter = ParameterPool.EXPONENTIAL.value
     elif distribution == Distribution.NORMAL:
         parameter = ParameterPool.NORMAL.value
+    elif distribution == Distribution.POISSON:
+        parameter = ParameterPool.POISSON.value
+    elif distribution == Distribution.BINOMIAL:
+        parameter = ParameterPool.BINOMIAL.value
     else:
         return
     stage_set = parameter.stage_set
@@ -457,6 +472,15 @@ def main(argv):
                 is_distribution = True
             elif arg == "lognormal":
                 distribution = Distribution.LOGNORMAL
+                is_distribution = True
+            elif arg == "normal":
+                distribution = Distribution.NORMAL
+                is_distribution = True
+            elif arg == "binomial":
+                distribution = Distribution.BINOMIAL
+                is_distribution = True
+            elif arg == "poisson":
+                distribution = Distribution.POISSON
                 is_distribution = True
             else:
                 show_help_message('distribution')
