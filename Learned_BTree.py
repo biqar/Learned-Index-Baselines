@@ -75,7 +75,8 @@ class NpEncoder(json.JSONEncoder):
 def hybrid_training(threshold, use_threshold, stage_nums, core_nums, train_step_nums, batch_size_nums, learning_rate_nums,
                     keep_ratio_nums, train_data_x, train_data_y, test_data_x, test_data_y):
     stage_length = len(stage_nums)
-    col_num = stage_nums[1]
+    # col_num = stage_nums[1]
+    col_num = stage_nums[stage_length - 1]
     # initial
     tmp_inputs = [[[] for i in range(col_num)] for i in range(stage_length)]
     tmp_labels = [[[] for i in range(col_num)] for i in range(stage_length)]
@@ -83,6 +84,8 @@ def hybrid_training(threshold, use_threshold, stage_nums, core_nums, train_step_
     tmp_inputs[0][0] = train_data_x
     tmp_labels[0][0] = train_data_y
     test_inputs = test_data_x
+    # print("stage_length: {}, threshold: {}, use_threshold: {}, core_nums: {}, train_step_nums: {}, batch_size_nums: {}, learning_rate_nums: {}, keep_ratio_nums: {}"
+    #       .format(stage_length, len(threshold), len(use_threshold), len(core_nums), len(train_step_nums), len(batch_size_nums), len(learning_rate_nums), len(keep_ratio_nums)))
     for i in range(0, stage_length):
         for j in range(0, stage_nums[i]):
             if len(tmp_labels[i][j]) == 0:
@@ -116,6 +119,10 @@ def hybrid_training(threshold, use_threshold, stage_nums, core_nums, train_step_
                     p = index[i][j].predict(tmp_inputs[i][j][ind])                    
                     if p > stage_nums[i + 1] - 1:
                         p = stage_nums[i + 1] - 1
+                    if p < 0:
+                        p = 0
+                    # if p >= stage_nums[i + 1] or p < 0:
+                    #     print("stage: {}, predicted-model: {}, num-models: {}".format(i, p, stage_nums[i + 1]))
                     tmp_inputs[i + 1][p].append(tmp_inputs[i][j][ind])
                     tmp_labels[i + 1][p].append(tmp_labels[i][j][ind])
 
@@ -123,6 +130,7 @@ def hybrid_training(threshold, use_threshold, stage_nums, core_nums, train_step_
         if index[stage_length - 1][i] is None:
             continue
         mean_abs_err = index[stage_length - 1][i].mean_err
+        # print("Model-id: {}, mean_abs_err: {}, threshold: {}".format(i, mean_abs_err, threshold[stage_length - 1]))
         if mean_abs_err > threshold[stage_length - 1]:
             # replace model with BTree if mean error > threshold
             print("Using BTree")
